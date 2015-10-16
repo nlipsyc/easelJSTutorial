@@ -1,9 +1,11 @@
 // window.alert("working!");
-var stage, circle;
-var ticker = createjs.Ticker,
-	lastCycle = 0;
-	
+var stage, circle, oldX, oldY, strokeColour, strokeWeight,
+	ticker = createjs.Ticker,
+	lastCycle = 0,
+	drawShown = false;
 
+
+	
 function init(){
 	stage = new createjs.Stage("demoCanvas");
 
@@ -15,6 +17,10 @@ function init(){
 	circle.x = 100;
 	circle.y = 100;
 	stage.addChild(circle);
+
+	line = new createjs.Shape();
+	stage.addChild(line);
+
 	stage.update();
 
 //Mouse events
@@ -29,23 +35,58 @@ function init(){
 		}
 		stage.update();
 	});
-	circle.on("mouseover", function(){
-		console.log("mouseover");
-		circle.graphics.clear().beginFill("purple").drawCircle(0,0,50);
-		stage.update();
-	});
-	circle.on("mouseout", function(){
-		console.log("mouseout");
-		circle.graphics.clear().f("DeepSkyBlue").dc(0,0,50);
-		stage.update();
-	});
+	// circle.on("mouseover", function(event){
+	// 	console.log("mouseover");
+	// 	circle.graphics.clear().beginFill("purple").drawCircle(0,0,50);
+	// 	stage.update();
+	// });
+	// circle.on("mouseout", function(event){
+	// 	console.log("mouseout");
+	// 	circle.graphics.clear().f("DeepSkyBlue").dc(0,0,50);
+	// 	stage.update();
+	// });
 
+	circle.on("pressmove", function(evt){
+				
+	})
+	circle.on("click", function(event){
+		console.log("click!");
+		strokeColour = createjs.Graphics.getHSL(Math.random()*360, 100, 50);
+		strokeWeight = 20*Math.random();
 
+		handleDraw();
+	});
 
 
 	// ticker.addEventListener("tick", tick);
 	// ticker.setFPS(20);
 }
+
+
+/**********Drawing*******/
+
+
+function handleDraw(){
+	drawShown=!drawShown;
+
+	console.log(drawShown);
+
+	stage.on("stagemousemove", function(evt){
+
+		if(oldX && drawShown){
+			line.graphics.beginStroke(strokeColour)
+							.setStrokeStyle(strokeWeight,"round")
+							.moveTo(oldX,oldY)
+							.lineTo(evt.stageX, evt.stageY);
+			stage.update();
+		}
+		oldX = evt.stageX;
+		oldY = evt.stageY;
+	});
+	stage.update();
+}
+
+
 
 /***********Animation************/
 // function tick(event){

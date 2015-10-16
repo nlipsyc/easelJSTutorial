@@ -9,6 +9,9 @@ var stage, circle, oldX, oldY, strokeColour, strokeWeight,
 function init(){
 	stage = new createjs.Stage("demoCanvas");
 
+	//Allows mouse tracking outside of the stage
+	stage.mouseMoveOutside = true; 
+
 	stage.enableMouseOver();
 
 
@@ -26,15 +29,15 @@ function init(){
 //Mouse events
 
 
-	circle.on("click", function(){
-		if(circle.x%2===0){
-			circle.x+=51;
-		}
-		else{
-			circle.x-=51;
-		}
-		stage.update();
-	});
+	// circle.on("click", function(){
+	// 	if(circle.x%2===0){
+	// 		circle.x+=51;
+	// 	}
+	// 	else{
+	// 		circle.x-=51;
+	// 	}
+	// 	stage.update();
+	// });
 	// circle.on("mouseover", function(event){
 	// 	console.log("mouseover");
 	// 	circle.graphics.clear().beginFill("purple").drawCircle(0,0,50);
@@ -47,8 +50,11 @@ function init(){
 	// });
 
 	circle.on("pressmove", function(evt){
-				
-	})
+		evt.currentTarget.x = evt.stageX-50;
+		evt.currentTarget.y = evt.stageY;
+
+		stage.update();
+	});
 	circle.on("click", function(event){
 		console.log("click!");
 		strokeColour = createjs.Graphics.getHSL(Math.random()*360, 100, 50);
@@ -85,8 +91,6 @@ function handleDraw(){
 	});
 	stage.update();
 }
-
-
 
 /***********Animation************/
 // function tick(event){
